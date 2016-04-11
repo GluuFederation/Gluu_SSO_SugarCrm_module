@@ -43,17 +43,10 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 global $mod_strings, $app_strings, $sugar_config, $module_menu, $global_control_links;
-$mod_strings['GLUU_GENERAL'] = 'Gluu SSO module';
+$mod_strings['GLUU_GENERAL'] = 'Gluu SSO 2.4.2';
 $mod_strings['GLUU_SCOPES_AND_SCRIPTS'] = 'OpenID Connect Configuration';
 $mod_strings['GLUU_SUGAR_CONFIG'] = 'SugarCRM Configuration for Gluu';
 $mod_strings['GLUU_HELP'] = 'Help & Troubleshooting';
-
-/*if (sugar_is_file('include/globalControlLinks.php')) {
-    $global_control_links['Gluu SOO'] = array('linkinfo' => array('Gluu SOO'=>'index.php?module=Gluussos&action=general'));
-    include('include/globalControlLinks.php');
-}*/
-
-
 
 if(ACLController::checkAccess('Gluussos', '', true)){
     $module_menu[] = Array("index.php?module=Gluussos&action=general", $mod_strings['GLUU_GENERAL'],"Gluussos", 'Gluussos');

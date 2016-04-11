@@ -579,7 +579,15 @@ table td {
 td, th {
     padding-left: 0px !important;
 }
-
+.mess_red_error {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    color: #2120ff;
+    background-color: red;
+    padding: 5px;
+    border: solid 1px red;
+}
 .mess_red {
     font-weight: bold;
     display: block;
@@ -589,7 +597,15 @@ td, th {
     padding: 5px;
     border: solid 1px rgba(255, 0, 9, 0.36);
 }
-
+.mess_green {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    color: #2120ff;
+    background-color: #1fff3b;
+    padding: 5px;
+    border: solid 1px #1fff3b;
+}
 .mess_red a {
     color: #0bad12;
 }

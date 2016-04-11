@@ -13,7 +13,7 @@ $query = "CREATE TABLE IF NOT EXISTS `gluu_table` (
 ;
 $result = $db->query($query);
 if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'scopes'")){
-    $get_scopes = json_encode(array("openid","profile","email"));
+    $get_scopes = json_encode(array("openid","profile","email","address","clientinfo","mobile_phone","phone"));
     $result = $db->query("INSERT INTO gluu_table (gluu_action, gluu_value) VALUES ('scopes','$get_scopes')");
 }
 if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'custom_scripts'")){
@@ -31,7 +31,7 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
         "oxd_host_port" =>8099,
         "admin_email" => $GLOBALS['current_user']->email1,
         "authorization_redirect_uri" => $base_url.'/gluu.php?gluu_login=Gluussos',
-        "logout_redirect_uri" => $base_url.'/gluu.php?gluu_login=Gluussos',
+        "logout_redirect_uri" => $base_url.'/gluu_logout.php?gluu_login=Gluussos',
         "scope" => ["openid","profile","email","address","clientinfo","mobile_phone","phone"],
         "grant_types" =>["authorization_code"],
         "response_types" => ["code"],
@@ -86,265 +86,269 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
     $oxd_id = $db->fetchRow($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'"))["gluu_value"];
 }
 ?>
-<html>
-<head>
-    <link href="modules/Gluussos/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
-    <link href="modules/Gluussos/GluuOxd_Openid/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="modules/Gluussos/GluuOxd_Openid/js/scope-custom-script.js"></script>
-    <script>
-        var $m = jQuery.noConflict();
-        $m(document).ready(function () {
-            $oxd_id = "<?php echo $oxd_id; ?>";
-            if ($oxd_id) {
-                voiddisplay("#socialsharing");
-                setactive('social-sharing-setup');
-            } else {
-                setactive('account_setup');
-            }
-            $m(".navbar a").click(function () {
-                $id = $m(this).parent().attr('id');
-                setactive($id);
-                $href = $m(this).data('method');
-                voiddisplay($href);
-            });
-
-            $m('#error-cancel').click(function () {
-                $error = "";
-                $m(".error-msg").css("display", "none");
-            });
-            $m('#success-cancel').click(function () {
-                $success = "";
-                $m(".success-msg").css("display", "none");
-            });
-
-            $m(".test").click(function () {
-                $m(".mo2f_thumbnail").hide();
-                $m("#twofactorselect").show();
-                $m("#test_2factor").val($m(this).data("method"));
-                $m("#mo2f_2factor_test_form").submit();
-            });
+<link href="modules/Gluussos/GluuOxd_Openid/css/gluu-oxd-css.css" rel="stylesheet"/>
+<link href="modules/Gluussos/GluuOxd_Openid/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="modules/Gluussos/GluuOxd_Openid/js/scope-custom-script.js"></script>
+<script>
+    var $m = jQuery.noConflict();
+    $m(document).ready(function () {
+        $oxd_id = "<?php echo $oxd_id; ?>";
+        if ($oxd_id) {
+            voiddisplay("#socialsharing");
+            setactive('social-sharing-setup');
+        } else {
+            setactive('account_setup');
+        }
+        $m(".navbar a").click(function () {
+            $id = $m(this).parent().attr('id');
+            setactive($id);
+            $href = $m(this).data('method');
+            voiddisplay($href);
         });
-        function setactive($id) {
-            $m(".navbar-tabs>li").removeClass("active");
-            $m("#minisupport").show();
-            $id = '#' + $id;
-            $m($id).addClass("active");
-        }
-        function voiddisplay($href) {
-            $m(".page").css("display", "none");
-            $m($href).css("display", "block");
-        }
-        function mo2f_valid(f) {
-            !(/^[a-zA-Z?,.\(\)\/@ 0-9]*$/).test(f.value) ? f.value = f.value.replace(/[^a-zA-Z?,.\(\)\/@ 0-9]/, '') : null;
-        }
-        jQuery(document).ready(function () {
 
-            var tempHorSize = '<?php echo $iconCustomSize ?>';
-            var tempHorTheme = '<?php echo $loginTheme ?>';
-            var tempHorCustomTheme = '<?php echo $loginCustomTheme ?>';
-            var tempHorCustomColor = '<?php echo $iconCustomColor ?>';
-            var tempHorSpace = '<?php echo $iconSpace ?>';
-            var tempHorHeight = '<?php echo $iconCustomHeight ?>';
-            gluuOxLoginPreview(setSizeOfIcons(), tempHorTheme, tempHorCustomTheme, tempHorCustomColor, tempHorSpace, tempHorHeight);
-            checkLoginButton();
-
+        $m('#error-cancel').click(function () {
+            $error = "";
+            $m(".error-msg").css("display", "none");
         });
-        function setLoginTheme() {
-            return jQuery('input[name=gluuoxd_openid_login_theme]:checked', '#form-apps').val();
-        }
-        function setLoginCustomTheme() {
-            return jQuery('input[name=gluuoxd_openid_login_custom_theme]:checked', '#form-apps').val();
-        }
-        function setSizeOfIcons() {
-            if ((jQuery('input[name=gluuoxd_openid_login_theme]:checked', '#form-apps').val()) == 'longbutton') {
-                return document.getElementById('gluuox_login_icon_width').value;
-            } else {
-                return document.getElementById('gluuox_login_icon_size').value;
-            }
-        }
-        function gluuOxLoginPreview(t, r, l, p, n, h) {
+        $m('#success-cancel').click(function () {
+            $success = "";
+            $m(".success-msg").css("display", "none");
+        });
 
-            if (l == 'default') {
-                if (r == 'longbutton') {
-                    var a = "btn-defaulttheme";
-                    jQuery("." + a).css("width", t + "px");
-                    if (h > 26) {
-                        jQuery("." + a).css("height", "26px");
-                        jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
-                        jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
-                    } else {
-                        jQuery("." + a).css("height", h + "px");
-                        jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
-                        jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
-                    }
-                    jQuery(".fa").css("padding-top", (h - 35) + "px");
-                    jQuery("." + a).css("margin-bottom", n + "px");
+        $m(".test").click(function () {
+            $m(".mo2f_thumbnail").hide();
+            $m("#twofactorselect").show();
+            $m("#test_2factor").val($m(this).data("method"));
+            $m("#mo2f_2factor_test_form").submit();
+        });
+    });
+    function setactive($id) {
+        $m(".navbar-tabs>li").removeClass("active");
+        $m("#minisupport").show();
+        $id = '#' + $id;
+        $m($id).addClass("active");
+    }
+    function voiddisplay($href) {
+        $m(".page").css("display", "none");
+        $m($href).css("display", "block");
+    }
+    function mo2f_valid(f) {
+        !(/^[a-zA-Z?,.\(\)\/@ 0-9]*$/).test(f.value) ? f.value = f.value.replace(/[^a-zA-Z?,.\(\)\/@ 0-9]/, '') : null;
+    }
+    jQuery(document).ready(function () {
+
+        var tempHorSize = '<?php echo $iconCustomSize ?>';
+        var tempHorTheme = '<?php echo $loginTheme ?>';
+        var tempHorCustomTheme = '<?php echo $loginCustomTheme ?>';
+        var tempHorCustomColor = '<?php echo $iconCustomColor ?>';
+        var tempHorSpace = '<?php echo $iconSpace ?>';
+        var tempHorHeight = '<?php echo $iconCustomHeight ?>';
+        gluuOxLoginPreview(setSizeOfIcons(), tempHorTheme, tempHorCustomTheme, tempHorCustomColor, tempHorSpace, tempHorHeight);
+        checkLoginButton();
+
+    });
+    function setLoginTheme() {
+        return jQuery('input[name=gluuoxd_openid_login_theme]:checked', '#form-apps').val();
+    }
+    function setLoginCustomTheme() {
+        return jQuery('input[name=gluuoxd_openid_login_custom_theme]:checked', '#form-apps').val();
+    }
+    function setSizeOfIcons() {
+        if ((jQuery('input[name=gluuoxd_openid_login_theme]:checked', '#form-apps').val()) == 'longbutton') {
+            return document.getElementById('gluuox_login_icon_width').value;
+        } else {
+            return document.getElementById('gluuox_login_icon_size').value;
+        }
+    }
+    function gluuOxLoginPreview(t, r, l, p, n, h) {
+
+        if (l == 'default') {
+            if (r == 'longbutton') {
+                var a = "btn-defaulttheme";
+                jQuery("." + a).css("width", t + "px");
+                if (h > 26) {
+                    jQuery("." + a).css("height", "26px");
+                    jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
+                    jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
                 } else {
-                    var a = "gluuox_login_icon_preview";
-                    jQuery("." + a).css("margin-left", n + "px");
-                    if (r == "circle") {
-                        jQuery("." + a).css({height: t, width: t});
-                        jQuery("." + a).css("borderRadius", "999px");
-                    } else if (r == "oval") {
-                        jQuery("." + a).css("borderRadius", "5px");
-                        jQuery("." + a).css({height: t, width: t});
-                    } else if (r == "square") {
-                        jQuery("." + a).css("borderRadius", "0px");
-                        jQuery("." + a).css({height: t, width: t});
-                    }
+                    jQuery("." + a).css("height", h + "px");
+                    jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
+                    jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
                 }
-            }
-            else if (l == 'custom') {
-                if (r == 'longbutton') {
-                    var a = "btn-customtheme";
-                    jQuery("." + a).css("width", (t) + "px");
-                    if (h > 26) {
-                        jQuery("." + a).css("height", "26px");
-                        jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
-                        jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
-                    } else {
-                        jQuery("." + a).css("height", h + "px");
-                        jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
-                        jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
-                    }
-                    jQuery("." + a).css("margin-bottom", n + "px");
-                    jQuery("." + a).css("background", p);
-                } else {
-                    var a = "gluuOx_custom_login_icon_preview";
-                    jQuery("." + a).css({height: t - 8, width: t});
-                    jQuery("." + a).css("padding-top", "8px");
-                    jQuery("." + a).css("margin-left", n + "px");
-                    jQuery("." + a).css("background", p);
-
-                    if (r == "circle") {
-                        jQuery("." + a).css("borderRadius", "999px");
-                    } else if (r == "oval") {
-                        jQuery("." + a).css("borderRadius", "5px");
-                    } else if (r == "square") {
-                        jQuery("." + a).css("borderRadius", "0px");
-                    }
-                    jQuery("." + a).css("font-size", (t - 16) + "px");
-                }
-            }
-            previewLoginIcons();
-        }
-        function checkLoginButton() {
-            if (document.getElementById('iconwithtext').checked) {
-                if (setLoginCustomTheme() == 'default') {
-                    jQuery(".gluuox_login_icon_preview").hide();
-                    jQuery(".gluuOx_custom_login_icon_preview").hide();
-                    jQuery(".btn-customtheme").hide();
-                    jQuery(".btn-defaulttheme").show();
-                } else if (setLoginCustomTheme() == 'custom') {
-                    jQuery(".gluuox_login_icon_preview").hide();
-                    jQuery(".gluuOx_custom_login_icon_preview").hide();
-                    jQuery(".btn-defaulttheme").hide();
-                    jQuery(".btn-customtheme").show();
-                }
-                jQuery("#commontheme").hide();
-                jQuery(".longbuttontheme").show();
-            }
-            else {
-                if (setLoginCustomTheme() == 'default') {
-                    jQuery(".gluuox_login_icon_preview").show();
-                    jQuery(".btn-defaulttheme").hide();
-                    jQuery(".btn-customtheme").hide();
-                    jQuery(".gluuOx_custom_login_icon_preview").hide();
-                } else if (setLoginCustomTheme() == 'custom') {
-                    jQuery(".gluuox_login_icon_preview").hide();
-                    jQuery(".gluuOx_custom_login_icon_preview").show();
-                    jQuery(".btn-defaulttheme").hide();
-                    jQuery(".btn-customtheme").hide();
-                }
-                jQuery("#commontheme").show();
-                jQuery(".longbuttontheme").hide();
-            }
-
-            previewLoginIcons();
-        }
-        function previewLoginIcons() {
-            var flag = 0;
-            <?php foreach($custom_scripts as $custom_script):?>
-            if (document.getElementById('<?php echo $custom_script['value'];?>_enable').checked) {
-                flag = 1;
-                if (document.getElementById('gluuoxd_openid_login_default_radio').checked && !document.getElementById('iconwithtext').checked)
-                    jQuery("#gluuox_login_icon_preview_<?php echo $custom_script['value'];?>").show();
-                if (document.getElementById('gluuoxd_openid_login_custom_radio').checked && !document.getElementById('iconwithtext').checked)
-                    jQuery("#gluuOx_custom_login_icon_preview_<?php echo $custom_script['value'];?>").show();
-                if (document.getElementById('gluuoxd_openid_login_default_radio').checked && document.getElementById('iconwithtext').checked)
-                    jQuery("#gluuox_login_button_preview_<?php echo $custom_script['value'];?>").show();
-                if (document.getElementById('gluuoxd_openid_login_custom_radio').checked && document.getElementById('iconwithtext').checked)
-                    jQuery("#gluuOx_custom_login_button_preview_<?php echo $custom_script['value'];?>").show();
-            }
-            else if (!document.getElementById('<?php echo $custom_script['value'];?>_enable').checked) {
-                jQuery("#gluuox_login_icon_preview_<?php echo $custom_script['value'];?>").hide();
-                jQuery("#gluuOx_custom_login_icon_preview_<?php echo $custom_script['value'];?>").hide();
-                jQuery("#gluuox_login_button_preview_<?php echo $custom_script['value'];?>").hide();
-                jQuery("#gluuOx_custom_login_button_preview_<?php echo $custom_script['value'];?>").hide();
-            }
-            <?php endforeach;?>
-            if (flag) {
-                jQuery("#no_apps_text").hide();
+                jQuery(".fa").css("padding-top", (h - 35) + "px");
+                jQuery("." + a).css("margin-bottom", n + "px");
             } else {
-                jQuery("#no_apps_text").show();
+                var a = "gluuox_login_icon_preview";
+                jQuery("." + a).css("margin-left", n + "px");
+                if (r == "circle") {
+                    jQuery("." + a).css({height: t, width: t});
+                    jQuery("." + a).css("borderRadius", "999px");
+                } else if (r == "oval") {
+                    jQuery("." + a).css("borderRadius", "5px");
+                    jQuery("." + a).css({height: t, width: t});
+                } else if (r == "square") {
+                    jQuery("." + a).css("borderRadius", "0px");
+                    jQuery("." + a).css({height: t, width: t});
+                }
             }
+        }
+        else if (l == 'custom') {
+            if (r == 'longbutton') {
+                var a = "btn-customtheme";
+                jQuery("." + a).css("width", (t) + "px");
+                if (h > 26) {
+                    jQuery("." + a).css("height", "26px");
+                    jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
+                    jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
+                } else {
+                    jQuery("." + a).css("height", h + "px");
+                    jQuery("." + a).css("padding-top", (h - 26) / 2 + "px");
+                    jQuery("." + a).css("padding-bottom", (h - 26) / 2 + "px");
+                }
+                jQuery("." + a).css("margin-bottom", n + "px");
+                jQuery("." + a).css("background", p);
+            } else {
+                var a = "gluuOx_custom_login_icon_preview";
+                jQuery("." + a).css({height: t - 8, width: t});
+                jQuery("." + a).css("padding-top", "8px");
+                jQuery("." + a).css("margin-left", n + "px");
+                jQuery("." + a).css("background", p);
+
+                if (r == "circle") {
+                    jQuery("." + a).css("borderRadius", "999px");
+                } else if (r == "oval") {
+                    jQuery("." + a).css("borderRadius", "5px");
+                } else if (r == "square") {
+                    jQuery("." + a).css("borderRadius", "0px");
+                }
+                jQuery("." + a).css("font-size", (t - 16) + "px");
+            }
+        }
+        previewLoginIcons();
+    }
+    function checkLoginButton() {
+        if (document.getElementById('iconwithtext').checked) {
+            if (setLoginCustomTheme() == 'default') {
+                jQuery(".gluuox_login_icon_preview").hide();
+                jQuery(".gluuOx_custom_login_icon_preview").hide();
+                jQuery(".btn-customtheme").hide();
+                jQuery(".btn-defaulttheme").show();
+            } else if (setLoginCustomTheme() == 'custom') {
+                jQuery(".gluuox_login_icon_preview").hide();
+                jQuery(".gluuOx_custom_login_icon_preview").hide();
+                jQuery(".btn-defaulttheme").hide();
+                jQuery(".btn-customtheme").show();
+            }
+            jQuery("#commontheme").hide();
+            jQuery(".longbuttontheme").show();
+        }
+        else {
+            if (setLoginCustomTheme() == 'default') {
+                jQuery(".gluuox_login_icon_preview").show();
+                jQuery(".btn-defaulttheme").hide();
+                jQuery(".btn-customtheme").hide();
+                jQuery(".gluuOx_custom_login_icon_preview").hide();
+            } else if (setLoginCustomTheme() == 'custom') {
+                jQuery(".gluuox_login_icon_preview").hide();
+                jQuery(".gluuOx_custom_login_icon_preview").show();
+                jQuery(".btn-defaulttheme").hide();
+                jQuery(".btn-customtheme").hide();
+            }
+            jQuery("#commontheme").show();
+            jQuery(".longbuttontheme").hide();
+        }
+
+        previewLoginIcons();
+    }
+    function previewLoginIcons() {
+        var flag = 0;
+        <?php foreach($custom_scripts as $custom_script):?>
+        if (document.getElementById('<?php echo $custom_script['value'];?>_enable').checked) {
+            flag = 1;
+            if (document.getElementById('gluuoxd_openid_login_default_radio').checked && !document.getElementById('iconwithtext').checked)
+                jQuery("#gluuox_login_icon_preview_<?php echo $custom_script['value'];?>").show();
+            if (document.getElementById('gluuoxd_openid_login_custom_radio').checked && !document.getElementById('iconwithtext').checked)
+                jQuery("#gluuOx_custom_login_icon_preview_<?php echo $custom_script['value'];?>").show();
+            if (document.getElementById('gluuoxd_openid_login_default_radio').checked && document.getElementById('iconwithtext').checked)
+                jQuery("#gluuox_login_button_preview_<?php echo $custom_script['value'];?>").show();
+            if (document.getElementById('gluuoxd_openid_login_custom_radio').checked && document.getElementById('iconwithtext').checked)
+                jQuery("#gluuOx_custom_login_button_preview_<?php echo $custom_script['value'];?>").show();
+        }
+        else if (!document.getElementById('<?php echo $custom_script['value'];?>_enable').checked) {
+            jQuery("#gluuox_login_icon_preview_<?php echo $custom_script['value'];?>").hide();
+            jQuery("#gluuOx_custom_login_icon_preview_<?php echo $custom_script['value'];?>").hide();
+            jQuery("#gluuox_login_button_preview_<?php echo $custom_script['value'];?>").hide();
+            jQuery("#gluuOx_custom_login_button_preview_<?php echo $custom_script['value'];?>").hide();
+        }
+        <?php endforeach;?>
+        if (flag) {
+            jQuery("#no_apps_text").hide();
+        } else {
+            jQuery("#no_apps_text").show();
+        }
 
 
 
-        }
-        var selectedApps = [];
-        function setTheme() {
-            return jQuery('input[name=gluuoxd_openid_share_theme]:checked', '#settings_form').val();
-        }
-        function setCustomTheme() {
-            return jQuery('input[name=gluuoxd_openid_share_custom_theme]:checked', '#settings_form').val();
-        }
-        function gluuOxLoginSizeValidate(e) {
-            var t = parseInt(e.value.trim());
-            t > 60 ? e.value = 60 : 20 > t && (e.value = 20);
-            reloadLoginPreview();
-        }
-        function gluuOxLoginSpaceValidate(e) {
-            var t = parseInt(e.value.trim());
-            t > 60 ? e.value = 60 : 0 > t && (e.value = 0);
-            reloadLoginPreview();
-        }
-        function gluuOxLoginWidthValidate(e) {
-            var t = parseInt(e.value.trim());
-            t > 1000 ? e.value = 1000 : 140 > t && (e.value = 140)
-            reloadLoginPreview();
-        }
-        function gluuOxLoginHeightValidate(e) {
-            var t = parseInt(e.value.trim());
-            t > 100 ? e.value = 100 : 10 > t && (e.value = 10)
-            reloadLoginPreview();
-        }
-        function reloadLoginPreview() {
-            if (setLoginTheme() == 'longbutton')
-                gluuOxLoginPreview(document.getElementById('gluuox_login_icon_width').value, setLoginTheme(), setLoginCustomTheme(), document.getElementById('gluuox_login_icon_custom_color').value, document.getElementById('gluuox_login_icon_space').value,
-                    document.getElementById('gluuox_login_icon_height').value);
-            else
-                gluuOxLoginPreview(document.getElementById('gluuox_login_icon_size').value, setLoginTheme(), setLoginCustomTheme(), document.getElementById('gluuox_login_icon_custom_color').value, document.getElementById('gluuox_login_icon_space').value);
-        }
-    </script>
-    <style>
-        .headerList a:link, .headerList a:visited, .headerList a {
-            color: #00d300;
-            background-color: #43ffdf;
-        }
-    </style>
-</head>
-<body>
-<div class="heading"><h3>GLUU SSO</h3></div>
+    }
+    var selectedApps = [];
+    function setTheme() {
+        return jQuery('input[name=gluuoxd_openid_share_theme]:checked', '#settings_form').val();
+    }
+    function setCustomTheme() {
+        return jQuery('input[name=gluuoxd_openid_share_custom_theme]:checked', '#settings_form').val();
+    }
+    function gluuOxLoginSizeValidate(e) {
+        var t = parseInt(e.value.trim());
+        t > 60 ? e.value = 60 : 20 > t && (e.value = 20);
+        reloadLoginPreview();
+    }
+    function gluuOxLoginSpaceValidate(e) {
+        var t = parseInt(e.value.trim());
+        t > 60 ? e.value = 60 : 0 > t && (e.value = 0);
+        reloadLoginPreview();
+    }
+    function gluuOxLoginWidthValidate(e) {
+        var t = parseInt(e.value.trim());
+        t > 1000 ? e.value = 1000 : 140 > t && (e.value = 140)
+        reloadLoginPreview();
+    }
+    function gluuOxLoginHeightValidate(e) {
+        var t = parseInt(e.value.trim());
+        t > 100 ? e.value = 100 : 10 > t && (e.value = 10)
+        reloadLoginPreview();
+    }
+    function reloadLoginPreview() {
+        if (setLoginTheme() == 'longbutton')
+            gluuOxLoginPreview(document.getElementById('gluuox_login_icon_width').value, setLoginTheme(), setLoginCustomTheme(), document.getElementById('gluuox_login_icon_custom_color').value, document.getElementById('gluuox_login_icon_space').value,
+                document.getElementById('gluuox_login_icon_height').value);
+        else
+            gluuOxLoginPreview(document.getElementById('gluuox_login_icon_size').value, setLoginTheme(), setLoginCustomTheme(), document.getElementById('gluuox_login_icon_custom_color').value, document.getElementById('gluuox_login_icon_space').value);
+    }
+</script>
+<div class="heading"><h3>GLUU SSO 2.4.2 </h3></div>
+
 <div class="mo2f_container">
     <div class="container">
+        <div id="messages">
+            <?php if (!empty($_SESSION['message_error'])){ ?>
+                <div class="mess_red_error">
+                    <?php echo $_SESSION['message_error']; ?>
+                </div>
+                <?php unset($_SESSION['message_error']);} ?>
+            <?php if (!empty($_SESSION['message_success'])) { ?>
+                <div class="mess_green">
+                    <?php echo $_SESSION['message_success']; ?>
+                </div>
+                <?php unset($_SESSION['message_success']);} ?>
+        </div>
         <ul class="navbar navbar-tabs">
             <li id="account_setup"><a data-method="#accountsetup">General</a></li>
             <li id="social-sharing-setup"><a data-method="#socialsharing">OpenID Connect Configuration</a></li>
             <li id="social-login-setup"><a data-method="#sociallogin">SugarCRM Configuration</a></li>
             <li id="help_trouble"><a data-method="#helptrouble">Help & Troubleshooting</a></li>
         </ul>
+
         <div class="container-page">
             <!-- General -->
             <?php if (!$oxd_id) { ?>
@@ -411,13 +415,13 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                 </div>
             <?php } else{?>
                 <div class="page" id="accountsetup">
-                    <div style="border: 2px solid #53cc6b; margin-bottom: 20px; margin-top: 20px;">
+                    <div>
                         <div>
                             <div class="about">
                                 <h3 style="color: #45a8ff" class="sc"><img style=" height: 45px; margin-left: 20px;" src="modules/Gluussos/GluuOxd_Openid/images/icons/ox.png"/>&nbsp; server config</h3>
                             </div>
                         </div>
-                        <div class="entry-edit" style="width: 1000px !important; margin-left: 30px; margin-bottom: 30px; margin-right: 30px;">
+                        <div class="entry-edit" >
                             <div class="entry-edit-head">
                                 <h4 class="icon-head head-edit-form fieldset-legend">OXD id</h4>
                             </div>
@@ -459,7 +463,7 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                                     </h3>
                                 </div>
                             </div>
-                            <div class="entry-edit" style="width: 1000px !important; margin-left: 30px; ">
+                            <div class="entry-edit" >
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
                                     <h4 class="icon-head head-edit-form fieldset-legend">All Scopes</h4>
                                 </div>
@@ -522,14 +526,14 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                                     </div>
                                 </div>
                             </div>
-                            <div class="entry-edit" style="width: 1000px !important; margin-left: 30px">
+                            <div class="entry-edit" style="display: none">
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
                                     <h4 class="icon-head head-edit-form fieldset-legend">Add scopes</h4>
                                 </div>
                                 <div class="fieldset">
-                                    <input type="button" class="button button-primary button-large add" style="width: 100px" value="Add scopes"/>
+                                    <input type="button" id="adding" class="button button-primary button-large add" style="width: 100px" value="Add scopes"/>
                                     <div class="hor-scroll">
-                                        <table class="form-list container">
+                                        <table class="form-list5 container">
                                             <tr class="wrapper-tr">
                                                 <td class="value">
                                                     <input type="text" placeholder="Input scope name" name="scope_name[]"/>
@@ -539,7 +543,7 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                                     </div>
                                 </div>
                             </div>
-                            <div class="entry-edit" style="width: 1000px !important; margin-left: 30px">
+                            <div class="entry-edit" >
                                 <div class="entry-edit-head" style="background-color: #00aa00 !important;">
                                     <h4 class="icon-head head-edit-form fieldset-legend">All custom scripts</h4>
                                 </div>
@@ -559,7 +563,7 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                                             <a target="_blank" href="http://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata">default_acr_value</a>
                                             or during the authentication process, a client may request a specific type of authentication using the
                                             <a target="_blank" href="http://openid.net/specs/openid-connect-core-1_0.html#AuthRequest">acr_values</a> parameter.
-                                            This is the mechanism that the Gluu SSO Plugin uses: each login icon corresponds to a acr request value.
+                                            This is the mechanism that the Gluu SSO module uses: each login icon corresponds to a acr request value.
                                             For example, and acr may tell the OpenID Connect to use Facebook, Google or even plain old password authentication.
                                             The nice thing about this approach is that your applications (like SugarCRM) don't have
                                             to implement the business logic for social login--it's handled by the OpenID Connect Provider.
@@ -585,7 +589,7 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                                                                class="app_enable"
                                                                name="gluuoxd_openid_<?php echo $custom_script['value']; ?>_enable"
                                                                value="1"
-                                                               onchange="previewLoginIcons();" <?php if ('Enable') echo "checked"; ?> /><b><?php echo $custom_script['name']; ?></b>
+                                                               onchange="previewLoginIcons();" <?php if ($db->fetchRow($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '".$custom_script['value']."Enable'"))['gluu_value']) echo "checked"; ?> /><b><?php echo $custom_script['name']; ?></b>
                                                     </td>
                                                     <?php
                                                 }
@@ -682,7 +686,7 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                 <?php } ?>
 
                 <form id="form-apps" name="form-apps" method="post"
-                      action="index.php?module=Gluussos&action=gluuPostData">
+                      action="index.php?module=Gluussos&action=gluuPostData" enctype="multipart/form-data">
                     <input type="hidden" name="form_key" value="sugar_crm_config_page"/>
                     <div class="mo2f_table_layout">
                         <input <?php if (!$oxd_id) echo 'disabled'; ?> type="submit" name="submit" value="Save" style="width:100px;margin-right:2%" class="button button-primary button-large">
@@ -844,18 +848,81 @@ if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'o
                     </div>
                 </form>
             </div>
-
+            <style>
+                #helptrouble h1, #helptrouble h2{
+                    font-size: 25px;
+                    font-weight: bold;
+                    color: black;
+                }
+            </style>
             <!-- Help & Troubleshooting tab-->
             <div class="page" id="helptrouble">
-                <div class="mo2f_table_layout">
-                    <h3 style="border: 1px solid green" align="center"><img width="100%" src="modules/Gluussos/GluuOxd_Openid/images/suitecrm.jpg">
-                    </h3>
-                </div>
+
+                <h1><a id="SugarCRM_GLUU_SSO_module_0"></a>SugarCRM GLUU SSO module</h1>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/plugin.jpg" alt="image"></p>
+                <p>SugarCRM-GLUU-SSO module gives access for login to your SugarCRM site, with the help of GLUU server.</p>
+                <p>There are already 2 versions of SUGARCRM-GLUU-SSO (2.4.2 and 2.4.3) modules, each in its turn is working with oxD and GLUU servers.
+                    For example if you are using SUGARCRM-gluu-sso-2.4.2 module, you need to connect with oxD-server-2.4.2.</p>
+                <p>Now I want to explain in details how to use module step by step.</p>
+                <p>Module will not be working if your host does not have https://.</p>
+                <h2><a id="Step_1_Install_Gluuserver_13"></a>Step 1. Install Gluu-server</h2>
+                <p>(version 2.4.2 or 2.4.3)</p>
+                <p>If you want to use external gluu server, You can not do this step.</p>
+                <p><a href="https://www.gluu.org/docs/deployment/">Gluu-server installation gide</a>.</p>
+                <h2><a id="Step_2_Download_oxDserver_21"></a>Step 2. Download oxD-server</h2>
+                <p><a href="https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.2.Final/oxd-server-2.4.2.Final-distribution.zip">Download oxD-server-2.4.2.Final</a>.</p>
+                <h2><a id="Step_3_Unzip_and_run_oXDserver_31"></a>Step 3. Unzip and run oXD-server</h2>
+                <ol>
+                    <li>Unzip your oxD-server.</li>
+                    <li>Open the command line and navigate to the extracted folder in the conf directory.</li>
+                    <li>Open oxd-conf.json file.</li>
+                    <li>If your server is using 8099 port, please change “port” number to free port, which is not used.</li>
+                    <li>Set parameter “op_host”:“Your gluu-server-url (internal or external)”</li>
+                    <li>Open the command line and navigate to the extracted folder in the bin directory.</li>
+                    <li>For Linux environment, run sh <a href="http://oxd-start.sh">oxd-start.sh</a>&amp;.</li>
+                    <li>For Windows environment, run oxd-start.bat.</li>
+                    <li>After the server starts, go to Step 4.</li>
+                </ol>
+                <h2><a id="Step_6_General_73"></a>Step 4. General</h2>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d6.png" alt="General"></p>
+                <ol>
+                    <li>Admin Email: please add your or admin email address for registrating site in Gluu server.</li>
+                    <li>Port number: choose that port which is using oxd-server (see in oxd-server/conf/oxd-conf.json file).</li>
+                    <li>Click <code>Next</code> to continue.</li>
+                </ol>
+                <p>If You are successfully registered in gluu server, you will see bottom page.</p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d7.png" alt="oxD_id"></p>
+                <p>For making sure go to your gluu server / OpenID Connect / Clients and search for your oxD ID</p>
+                <p>If you want to reset configurations click on Reset configurations button.</p>
+                <h2><a id="Step_8_OpenID_Connect_Configuration_89"></a>Step 5. OpenID Connect Configuration</h2>
+                <p>OpenID Connect Configuration page for SugarCRM-gluu-sso 2.4.2.</p>
+                <h3><a id="Scopes_93"></a>Scopes.</h3>
+                <p>You can look all scopes in your gluu server / OpenID Connect / Scopes and understand the meaning of  every scope.
+                    Scopes are need for getting loged in users information from gluu server.
+                    Pay attention to that, which scopes you are using that are switched on in your gluu server.</p>
+                <p>In SugarCRM-gluu-sso 2.4.2  you can only enable, disable and delete scope.
+                    <img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d8.png" alt="Scopes1"></p>
+                <h3><a id="Custom_scripts_104"></a>Custom scripts.</h3>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d10.png" alt="Customscripts"></p>
+                <p>You can look all custom scripts in your gluu server / Configuration / Manage Custom Scripts / and enable login type, which type you want.
+                    Custom Script represent itself the type of login, at this moment gluu server supports (U2F, Duo, Google +, Basic) types.</p>
+                <h3><a id="Pay_attention_to_that_111"></a>Pay attention to that.</h3>
+                <ol>
+                    <li>Which custom script you enable in your SugarCRM site in order it must be switched on in gluu server too.</li>
+                    <li>Which custom script you will be enable in OpenID Connect Configuration page, after saving that will be showed in SugarCRM Configuration page too.</li>
+                    <li>When you create new custom script, both fields are required.</li>
+                </ol>
+                <h2><a id="Step_9_SugarCRM_Configuration_117"></a>Step 6. SugarCRM Configuration</h2>
+                <h3><a id="Customize_Login_Icons_119"></a>Customize Login Icons</h3>
+                <p>Pay attention to that, if custom scripts are not enabled, nothing will be showed.
+                    Customize shape, space between icons and size of the login icons.</p>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d11.png" alt="SugarCRMConfiguration"></p>
+                <h2><a id="Step_10_Show_icons_in_frontend_126"></a>Step 7. Show icons in frontend</h2>
+                <p><img src="https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d12.png" alt="frontend"></p>
+
             </div>
         </div>
         <!-- END of Container Page -->
     </div>
     <!-- END of Container -->
 </div>
-</body>
-</html>
