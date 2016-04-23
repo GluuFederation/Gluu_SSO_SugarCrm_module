@@ -75,7 +75,7 @@ else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'open
     }
     $get_scopes = json_encode($up_cust_sc);
 
-    $result = $db->query("UPDATE `sugar`.`gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'scopes';");
+    $result = $db->query("UPDATE `gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'scopes';");
     $_SESSION['message_success'] = 'Scope deleted Successfully.';
     SugarApplication::redirect('index.php?module=Gluussos&action=general');
 }
@@ -94,7 +94,7 @@ else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'open
     }
     $get_scopes = json_encode($up_cust_sc);
 
-    $db->query("UPDATE `sugar`.`gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'custom_scripts';");
+    $db->query("UPDATE `gluu_table` SET `gluu_value` = '$get_scopes' WHERE `gluu_action` LIKE 'custom_scripts';");
     $_SESSION['message_success'] = 'Custom script deleted Successfully.';
     SugarApplication::redirect('index.php?module=Gluussos&action=general');
 }

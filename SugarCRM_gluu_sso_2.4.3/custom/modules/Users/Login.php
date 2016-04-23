@@ -127,13 +127,13 @@ $html = '';
 				<br/>';
 			 }
 		}
-$base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+$base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["PHP_SELF"] :  'https://'.$_SERVER["SERVER_NAME"].$_SERVER["PHP_SELF"];
 $html.="<br>
 		<script>
 
 
 			function socialLogin(appName){
-				window.location.href ='$base_url/index.php?module=Users&action=Login&app_name='+appName;
+				window.location.href ='$base_url?module=Users&action=Login&app_name='+appName;
 			}
 		</script>";
 	}
