@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Created by Vlad Karapetyan
- */
+*/
 
 require_once("modules/Gluussos/oxd-rp/Get_tokens_by_code.php");
 require_once("modules/Gluussos/oxd-rp/Get_user_info.php");
@@ -55,7 +56,7 @@ $reg_postal_code = '';
 $reg_fax = '';
 $reg_home_phone_number = '';
 $reg_phone_mobile_number = '';
-$reg_street_address = '';
+      $reg_street_address = '';
 $reg_birthdate = '';
 
 if($get_user_info_array->given_name[0]){

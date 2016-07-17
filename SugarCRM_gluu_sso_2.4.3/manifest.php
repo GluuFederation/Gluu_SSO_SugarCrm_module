@@ -73,7 +73,7 @@ $manifest = array (
 $installdefs = array (
   'copy' =>
   array (
-    0 => 
+    0 =>
     array (
       'from' => '<basepath>/custom/modules/Users',
       'to' => 'custom/modules/Users',
