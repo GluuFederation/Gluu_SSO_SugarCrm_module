@@ -1,11 +1,11 @@
-SugarCRM GLUU SSO module 
+SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu
 =========================
 ![image](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/plugin.jpg)
 
-SugarCRM-GLUU-SSO module gives access for login to your SugarCRM site, with the help of GLUU server.
+SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu module gives access for login to your SugarCRM site, with the help of GLUU server.
 
-There are already 3 versions of SUGARCRM-GLUU-SSO (2.4.2, 2.4.3 and 2.4.4) modules, each in its turn is working with oxD and GLUU servers.
-For example if you are using SUGARCRM-gluu-sso-2.4.4 module, you need to connect with oxD-server-2.4.4.
+There are already 3 versions of SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu (2.4.2, 2.4.3 and 2.4.4) modules, each in its turn is working with oxD and GLUU servers.
+For example if you are using SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu version 2.4.4, you need to connect with oxd-server-2.4.4.
 
 Now I want to explain in details how to use module step by step. 
 
@@ -19,7 +19,7 @@ If you want to use external gluu server, You can not do this step.
 
 [Gluu-server installation gide](https://www.gluu.org/docs/deployment/).
 
-## Step 2. Download oxD-server 
+## Step 2. Download oxd-server 
 
 (version 2.4.2, 2.4.3 or 2.4.4)
 
@@ -33,7 +33,7 @@ or
 
 [Download oxD-server-2.4.4.Final](https://ox.gluu.org/maven/org/xdi/oxd-server/2.4.4.Final/oxd-server-2.4.4.Final-distribution.zip).
 
-## Step 3. Unzip and run oXD-server
+## Step 3. Unzip and run oxd-server
  
 1. Unzip your oxD-server. 
 2. Open the command line and navigate to the extracted folder in the conf directory.
@@ -45,7 +45,7 @@ or
 8. For Windows environment, run oxd-start.bat.
 9. After the server starts, go to Step 4.
 
-## Step 4. Download SugarCRM-gluu-sso module
+## Step 4. Download SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu
  
 (version 2.4.2, 2.4.3 or 2.4.4)
 
@@ -60,7 +60,7 @@ or
 [Download SugarCRM-gluu-sso-2.4.4 module](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/SugarCRM_gluu_sso_2.4.4/SuiteCRM_gluu_sso_2.4.4.zip).
 
 
-For example if you are using gluu-server-2.4.2 it is necessary to use oxD-server-2.4.2 and SugarCRM-gluu-sso-2.4.2-module
+For example if you are using gluu-server-2.4.2 it is necessary to use oxd-server-2.4.2 and SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu 2.4.2
 
 ## Step 5. Install module
  
@@ -74,7 +74,7 @@ For example if you are using gluu-server-2.4.2 it is necessary to use oxD-server
 3. Click on ```Install``` button. 
 ![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d4.png) 
 
-4. Open menu tab Gluu SSO 2.4.v 
+4. Open menu tab SugarCRM OpenID Connect Single Sign-On (SSO) Module by Gluu 2.4.v 
 ![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d5.png) 
 
 ## Step 6. General
