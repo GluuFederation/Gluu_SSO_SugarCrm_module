@@ -62,10 +62,10 @@ $manifest = array (
   'description' => 'Use OpenID Connect to login by leveraging the oxd client service demon.',
   'icon' => '',
   'is_uninstallable' => true,
-  'name' => 'Gluu SSO 2.4.2',
-  'published_date' => '2016-04-10 15:56:23',
+  'name' => 'Gluu SSO 2.4.3',
+  'published_date' => '2016-04-11 16:36:43',
   'type' => 'module',
-  'version' => '2.4.2',
+  'version' => '2.4.3',
   'remove_tables' => 'prompt',
 );
 
@@ -73,7 +73,7 @@ $manifest = array (
 $installdefs = array (
   'copy' =>
   array (
-    0 => 
+    0 =>
     array (
       'from' => '<basepath>/custom/modules/Users',
       'to' => 'custom/modules/Users',
