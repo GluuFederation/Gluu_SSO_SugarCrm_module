@@ -18,7 +18,7 @@ In order to use the SugarCRM Module, you will need to have deployed a standard O
 
 ### Step 1. Download
 
-[Github source](https://github.com/GluuFederation/gluu-sso-SugarCRM-module/raw/master/SugarCRM_gluu_sso_2.4.4/SugarCRM_gluu_sso_2.4.4.zip)
+[Github source](https://github.com/GluuFederation/gluu-sso-SugarCRM-module/blob/master/SugarCRM_gluu_sso_2.4.4.zip?raw=true)
 
 ### Step 2. Install module
 

@@ -20,6 +20,11 @@ $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] 
 $db = DBManagerFactory::getInstance();
 
 if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_register_page' ) !== false ) {
+    if(!isset($_SERVER['HTTPS']) or $_SERVER['HTTPS'] != "on") {
+        $_SESSION['message_error'] = 'OpenID Connect requires https. This plugin will not work if your website uses http only.';
+        SugarApplication::redirect('index.php?module=Gluussos&action=general');
+        return;
+    }
     global $sugar_config;
     $sugar_config['http_referer']['list'][] = remove_http($_POST['gluu_server_url']);
     $config_option = json_encode(array(
