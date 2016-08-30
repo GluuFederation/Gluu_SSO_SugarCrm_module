@@ -7,12 +7,23 @@ ob_start();
 require_once('include/MVC/SugarApplication.php');
 $app = new SugarApplication();
 $app->startSession();
-
+function remove_http($url) {
+    $disallowed = array('http://', 'https://');
+    foreach($disallowed as $d) {
+        if(strpos($url, $d) === 0) {
+            return str_replace($d, '', $url);
+        }
+    }
+    return $url;
+}
 $base_url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
 $db = DBManagerFactory::getInstance();
 
-     if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_register_page' )               !== false ) {
+if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'general_register_page' ) !== false ) {
+    global $sugar_config;
+    $sugar_config['http_referer']['list'][] = remove_http($_POST['gluu_server_url']);
     $config_option = json_encode(array(
+        "op_host" => $_POST['gluu_server_url'],
         "oxd_host_ip" => '127.0.0.1',
         "oxd_host_port" =>$_POST['oxd_port'],
         "admin_email" => $_POST['loginemail'],
@@ -22,11 +33,11 @@ $db = DBManagerFactory::getInstance();
         "grant_types" =>["authorization_code"],
         "response_types" => ["code"],
         "application_type" => "web",
-        "redirect_uris" => [ $base_url.'/gluu.php?gluu_login=Gluussos'],
         "acr_values" => [],
     ));
     $db->query("UPDATE `gluu_table` SET `gluu_value` = '$config_option' WHERE `gluu_action` LIKE 'oxd_config';");
     $config_option = array(
+        "op_host" => $_POST['gluu_server_url'],
         "oxd_host_ip" => '127.0.0.1',
         "oxd_host_port" =>$_POST['oxd_port'],
         "admin_email" => $_POST['loginemail'],
@@ -36,13 +47,12 @@ $db = DBManagerFactory::getInstance();
         "grant_types" =>["authorization_code"],
         "response_types" => ["code"],
         "application_type" => "web",
-        "redirect_uris" => [ $base_url.'/gluu.php?gluu_login=Gluussos' ],
         "acr_values" => [],
     );
     $register_site = new Register_site();
+    $register_site->setRequestOpHost($config_option['op_host']);
     $register_site->setRequestAcrValues($config_option['acr_values']);
     $register_site->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
-    $register_site->setRequestRedirectUris($config_option['redirect_uris']);
     $register_site->setRequestGrantTypes($config_option['grant_types']);
     $register_site->setRequestResponseTypes(['code']);
     $register_site->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);
@@ -51,11 +61,11 @@ $db = DBManagerFactory::getInstance();
     $register_site->setRequestClientLogoutUri($config_option['logout_redirect_uri']);
     $register_site->setRequestScope($config_option['scope']);
     $status = $register_site->request();
-     if(!$status['status']){
-         $_SESSION['message_error'] = $status['message'];
-         SugarApplication::redirect('index.php?module=Gluussos&action=general');
-         return;
-     }
+    if(!$status['status']){
+        $_SESSION['message_error'] = $status['message'];
+        SugarApplication::redirect('index.php?module=Gluussos&action=general');
+        return;
+    }
     if($register_site->getResponseOxdId()){
         $oxd_id = $register_site->getResponseOxdId();
         if($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE 'oxd_id'")){
@@ -136,7 +146,6 @@ else if( isset( $_REQUEST['form_key'] ) and strpos( $_REQUEST['form_key'], 'open
     $update_site_registration->setRequestOxdId($oxd_id);
     $update_site_registration->setRequestAcrValues($config_option['acr_values']);
     $update_site_registration->setRequestAuthorizationRedirectUri($config_option['authorization_redirect_uri']);
-    $update_site_registration->setRequestRedirectUris($config_option['redirect_uris']);
     $update_site_registration->setRequestGrantTypes($config_option['grant_types']);
     $update_site_registration->setRequestResponseTypes(['code']);
     $update_site_registration->setRequestLogoutRedirectUri($config_option['logout_redirect_uri']);

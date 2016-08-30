@@ -59,7 +59,6 @@ if(isset($_REQUEST['app_name'])){
 	$get_authorization_url->request();
 
 	if($get_authorization_url->getResponseAuthorizationUrl()){
-		global  $sugar_config;
 		header( "Location: ". $get_authorization_url->getResponseAuthorizationUrl() );
 		exit;
 	}else{
