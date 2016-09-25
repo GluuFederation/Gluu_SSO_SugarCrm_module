@@ -143,7 +143,7 @@ function gluu_is_oxd_registered(){
         $m($href).css("display", "block");
     }
 </script>
-<div class="mo2f_container">
+<div class="mo2f_container" style="width: 1000px">
     <div class="container">
         <div id="messages">
             <?php if (!empty($_SESSION['message_error'])){ ?>
@@ -160,7 +160,7 @@ function gluu_is_oxd_registered(){
         <ul class="navbar navbar-tabs">
             <li class="active" id="account_setup"><a data-method="#accountsetup">General</a></li>
             <?php if ( !gluu_is_oxd_registered()) {?>
-            <li id="social-sharing-setup"><button disabled >OpenID Connect Configuration</button></li>
+            <li id="social-sharing-setup"><a style="pointer-events: none; cursor: default;" >OpenID Connect Configuration</a></li>
             <?php }else {?>
                 <li id="social-sharing-setup"><a data-method="#configopenid">OpenID Connect Configuration</a></li>
             <?php }?>
@@ -503,7 +503,7 @@ function gluu_is_oxd_registered(){
                                         <table class="form-list5 container">
                                             <tr class="wrapper-tr">
                                                 <td class="value">
-                                                    <input type="text" style='margin-left: -12px; width: 100px;' placeholder="Scope name" name="scope_name[]"/>
+                                                    <input type="text" style=' width: 100px;' placeholder="Scope name" name="scope_name[]"/>
                                                 </td>
                                             </tr>
                                         </table>
@@ -595,7 +595,7 @@ function gluu_is_oxd_registered(){
                                         <table class="form-list1 container">
                                             <tr class="count_scripts wrapper-trr">
                                                 <td class="value">
-                                                    <input style='margin-left: -12px; width: 100px;' type="text" placeholder="Acr value" name="acr_name[]"/>
+                                                    <input style=' width: 100px;' type="text" placeholder="Acr value" name="acr_name[]"/>
                                                 </td>
                                             </tr>
                                         </table>
