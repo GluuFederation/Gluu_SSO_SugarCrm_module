@@ -19,21 +19,18 @@ else if(!$gluu_send_user_check && $gluu_oxd_id) {
 	?>
 	<script type="application/javascript">
 		jQuery( document ).ready(function() {
-			$( "#bigbutton" ).after( "<br/><br/><label>Login by OpenID Provider<input type='radio' name='radio' id='OpenID' value='Yes' /> </label>" +
+			$( ".login" ).after( "<br/><br/><label>Login by OpenID Provider<input type='radio' name='radio' id='OpenID' value='Yes' /> </label>" +
 				"<br/><br/><label>Show login form<input type='radio' name='radio' id='base' value='No' /> </label>" );
-			$( "#bigbutton" ).after('<a href="<?php echo login_url();?>" style="background:green; color:#ffffff;border-radius: 0px;" class="btn btn-block" id="gluu_login">Login by OpenID Provider</a>');
-			jQuery('.input-group').hide();
-			jQuery('#bigbutton').hide();
+			$( ".login" ).after('<a href="<?php echo login_url();?>" style="display: block;width: 115px;height: 25px;background: #4E9CAF;padding: 10px;text-align: center;text-decoration : none;border-radius: 5px;color: white;font-weight: bold;" class="button primary" id="gluu_login">Login by OpenID Provider</a>');
+			jQuery('#form').hide();
 			$('input:radio[name="radio"]').change(
 				function(){
 					if ($(this).is(':checked') && $(this).val() == 'Yes') {
 						jQuery('#gluu_login').show();
-						jQuery('.input-group').hide();
-						jQuery('#bigbutton').hide();
+						jQuery('#form').hide();
 					}else{
 						jQuery('#gluu_login').hide();
-						jQuery('.input-group').show();
-						jQuery('#bigbutton').show();
+						jQuery('#form').show();
 					}
 				});
 			$('#OpenID').attr('checked', true);
