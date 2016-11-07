@@ -238,7 +238,7 @@ if( isset( $_REQUEST['gluu_login'] ) and strpos( $_REQUEST['gluu_login'], 'Gluus
                      $bool = True;
                  }
              }
-             if(!$bool){
+             if(!$bool or $gluu_users_can_register == 3){
                  echo "<script>
 					alert('You are not authorized for an account on this application. If you think this is an error, please contact your OpenID Connect Provider (OP) admin.');
 					location.href='index.php?action=index&module=Home';
