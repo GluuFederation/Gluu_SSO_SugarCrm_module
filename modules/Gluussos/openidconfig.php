@@ -309,17 +309,17 @@ function gluu_is_oxd_registered(){
         <div class="col-md-12">
                 <div id="messages">
                     <?php if (!empty($_SESSION['message_error'])){ ?>
-                        <div class="mess_red_error">
+                        <div class="mess_red_error" style="margin-bottom: 20px">
                             <?php echo $_SESSION['message_error']; ?>
                         </div>
                         <?php unset($_SESSION['message_error']);} ?>
                     <?php if (!empty($_SESSION['message_success'])) { ?>
-                        <div class="mess_green">
+                        <div class="mess_green" style="margin-bottom: 20px">
                             <?php echo $_SESSION['message_success']; ?>
                         </div>
                         <?php unset($_SESSION['message_success']);} ?>
                 </div>
-                <ul class="navbar navbar-tabs">
+                <ul class="navbar navbar-tabs" style="margin-bottom: 0px; ">
                     <li id="account_setup"><a href="index.php?module=Gluussos&action=general">General</a></li>
                     <?php if ( !gluu_is_oxd_registered()) {?>
                         <li class="active" id="social-sharing-setup"><button disabled >OpenID Connect Configuration</button></li>
@@ -445,7 +445,7 @@ function gluu_is_oxd_registered(){
                                         </tr>
                                     </table>
                                     <br/>
-                                    <p style=" margin-left: 20px; font-weight:bold "><label style="display: inline !important; "><input type="checkbox" name="send_user_check" id="send_user" value="1" <?php if(!gluu_is_oxd_registered()) echo 'disabled'?> <?php if( $gluu_send_user_check) echo 'checked';?> /> <span>Bypass the local SuiteCRM login page and send users straight to the OP for authentication</span></label>
+                                    <p style=" margin-left: 20px; font-weight:bold "><label style="display: inline !important; "><input type="checkbox" name="send_user_check" id="send_user" value="1" <?php if(!gluu_is_oxd_registered()) echo 'disabled'?> <?php if( $gluu_send_user_check) echo 'checked';?> /> <span>Bypass the local SugarCRM login page and send users straight to the OP for authentication</span></label>
                                     </p>
                                     <br/>
                                 </div>
