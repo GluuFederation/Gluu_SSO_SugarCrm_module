@@ -618,3 +618,6 @@ td, th {
     vertical-align: middle
 }
 
+td {
+		color: black !important;
+}

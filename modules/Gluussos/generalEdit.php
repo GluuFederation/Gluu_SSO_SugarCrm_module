@@ -5,20 +5,15 @@ if(!gluu_is_oxd_registered()){
 }
 function getBaseUrl()
 {
-    // output: /myproject/index.php
     $currentPath = $_SERVER['PHP_SELF'];
-
-    // output: Array ( [dirname] => /myproject [basename] => index.php [extension] => php [filename] => index )
     $pathInfo = pathinfo($currentPath);
-
-    // output: localhost
     $hostName = $_SERVER['HTTP_HOST'];
-
-    // output: http://
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-
-    // return: http://localhost/myproject/
-    return $protocol.$hostName.$pathInfo['dirname'];
+    if (strpos($pathInfo['dirname'], '\\') !== false) {
+        return $protocol . $hostName . "/";
+    } else {
+        return $protocol . $hostName . $pathInfo['dirname'] . "/";
+    }
 }
 $base_url  = getBaseUrl();
 
@@ -310,7 +305,7 @@ function gluu_is_oxd_registered(){
                             <div style="padding-left: 10px;">
                                 <p><label><input name="gluu_users_can_register" type="radio" id="gluu_users_can_register_3" <?php if($gluu_users_can_register==3){ echo "checked";} ?> value="3" style="margin-right: 3px">Disable automatic registration</label></p>
                             </div>
-                            <table>
+                            <table style="padding-left: 10px;">
                                 <tr>
                                     <td style=" width: 40%"><label for="UserType"><b>New User Default Role:</b></label></td>
                                     <td>
@@ -331,16 +326,15 @@ function gluu_is_oxd_registered(){
                                                 ?>
                                             </select>
                                         </div>
+                                        <br/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td  style=" width: 40%">
-                                        <input type="submit" name="saveButton" value="Save" style="height:23px;padding:0px;color:black;text-decoration: none;text-align:center; float: left; width: 120px;" class="btn btn-primary btn-md"/>
-                                        <a class="btn btn-primary btn-md" onclick="edit_cancel_function()" style="margin-left:20px;height:23px;padding:0px;color:black;text-decoration: none;text-align:center; float: left; width: 120px;" href="index.php?module=Gluussos&action=general">Cancel</a>
-                                        <br/>
+                                    <td  style=" width: 54%;padding-left: 10px;">
+                                        <input type="submit" name="saveButton" value="Save" style="height:23px;color:black;text-decoration: none;text-align:center; float: right; width: 120px;margin-right:10px " class="btn btn-primary btn-md"/>
                                     </td>
                                     <td>
-                                        <br/><br/><br/>
+                                        <a class="btn btn-primary btn-md" onclick="edit_cancel_function()" style="height:23px;padding:0px;color:black;text-decoration: none;text-align:center; float: left; width: 120px;" href="index.php?module=Gluussos&action=general">Cancel</a>
                                     </td>
                                 </tr>
                             </table>
