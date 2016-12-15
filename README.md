@@ -1,6 +1,6 @@
 # SugarCRM OpenID Connect Single Sign-On (SSO) Module By Gluu
 
-![image](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/plugin.jpg)
+![image](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/plugin.jpg)
 
 Gluu's OpenID Connect Single Sign-On (SSO) SugarCRM module will enable you to authenticate users against any standard OpenID Connect Provider (OP). If you don't already have an OP you can [deploy the free open source Gluu Server](https://gluu.org/docs/deployment).  
 
@@ -15,20 +15,20 @@ In order to use the SugarCRM module you will need to have a standard OP (like Go
 ## Installation
  
 ### Download
-[Github source](https://github.com/GluuFederation/gluu-sso-SugarCRM-module/blob/master/gluu-sso-SugarCRM-module.zip?raw=true)
+[Github source](https://github.com/GluuFederation/sugarcrm-oxd-module/blob/master/gluu-sso-SugarCRM-module.zip?raw=true)
 
 1. Open menu tab Admin and click on ```Module loader``` button
-![Manager](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/1.png) 
-![Manager](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/2.png) 
+![Manager](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/1.png) 
+![Manager](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/2.png) 
 
 2. Choose downloaded module and click on ```Upload``` button. 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d3.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d3.png) 
 
 3. Click on ```Install``` button. 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d4.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d4.png) 
 
 4. Open menu tab OpenID Connect (SSO) Module by Gluu 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d5.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d5.png) 
 
 ## Configuration
 
@@ -36,7 +36,7 @@ In order to use the SugarCRM module you will need to have a standard OP (like Go
  
 In your SugarCRM admin menu panel you should now see the OpenID Connect menu tab. Click the link to navigate to the General configuration  page:
 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d6.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d6.png) 
 
 1. Automatically register any user with an account in the OpenID Provider: By setting registration to automatic, any user with an account in the OP will be able to dynamically register for an account in your SugarCRM site. They will be assigned the new user default role specified below.
 2. Only register users with the following role(s) in the OP: Using this option you can limit registration to users who have a specified role in the OP, for instance `sugarcrm`. This is not configurable in all OP's. It is configurable if you are using a Gluu Server. [Follow the instructions below](#role-based-enrollment) to limit access based on an OP role. 
@@ -50,7 +50,7 @@ If your OpenID Provider supports dynamic registration, no additional steps are r
 
 If your OpenID Connect Provider doesn't support dynamic registration, you will need to insert your OpenID Provider `client_id` and `client_secret` on the following page.
 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d7.png)  
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d7.png)  
 
 To generate your `client_id` and `client_secret` use the redirect uri: `https://{site-base-url}/index.php?option=oxdOpenId`.
 
@@ -62,7 +62,7 @@ Navigate to your Gluu Server admin GUI. Click the `Users` tab in the left hand n
 
 ### OpenID Connect Configuration
 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d8.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d8.png) 
 
 #### User Scopes
 
@@ -83,7 +83,7 @@ In the module interface you can enable, disable and delete scopes.
 Check this box so that when users attempt to login they are sent straight to the OP, bypassing the local SugarCRM login screen.
 When it is not checked, it will give proof the following screen.   
 
-![upload](https://raw.githubusercontent.com/GluuFederation/gluu-sso-SugarCRM-module/master/docu/d9.png) 
+![upload](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/d9.png) 
 
 ##### Select acr
 
