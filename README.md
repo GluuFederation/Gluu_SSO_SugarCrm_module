@@ -15,7 +15,7 @@ In order to use the SugarCRM module you will need to have a standard OP (like Go
 ## Installation
  
 ### Download
-[Github source](https://github.com/GluuFederation/sugarcrm-oxd-module/blob/master/gluu-sso-SugarCRM-module.zip?raw=true)
+[Github source](https://github.com/GluuFederation/sugarcrm-oxd-module/blob/master/sugarcrm-oxd-module.zip?raw=true)
 
 1. Open menu tab Admin and click on ```Module loader``` button
 ![Manager](https://raw.githubusercontent.com/GluuFederation/sugarcrm-oxd-module/master/docu/1.png) 
