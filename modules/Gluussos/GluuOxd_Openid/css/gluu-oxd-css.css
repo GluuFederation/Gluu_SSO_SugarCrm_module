@@ -621,3 +621,6 @@ td, th {
 td {
 		color: black !important;
 }
+table, div{
+    font-size:13px !important;
+}

@@ -7,7 +7,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 	 *
 	 * @package	  OpenID Connect SSO Module by Gluu
 	 * @category  Module for SugarCrm
-	 * @version   3.0.1
+	 * @version   3.1.1
 	 *
 	 * @author    Gluu Inc.          : <https://gluu.org>
 	 * @link      Oxd site           : <https://oxd.gluu.org>

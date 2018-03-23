@@ -5,7 +5,7 @@
 	 *
 	 * @package	  OpenID Connect SSO Module by Gluu
 	 * @category  Module for SugarCrm
-	 * @version   3.0.1
+	 * @version   3.1.1
 	 *
 	 * @author    Gluu Inc.          : <https://gluu.org>
 	 * @link      Oxd site           : <https://oxd.gluu.org>
@@ -362,7 +362,7 @@ function gluu_is_oxd_registered(){
                     <?php }?>
                     <li id=""><a data-method="#configopenid" href="https://gluu.org/docs/oxd/3.0.1/plugin/sugarcrm/" target="_blank">Documentation</a></li>
                 </ul>
-                <div class="container-page">
+                <div class="container-page" style="background-color: #e5fff3;">
                     <div id="configopenid" style="padding: 20px !important;">
                         <form action="index.php?module=Gluussos&action=gluuPostData" method="post" id="scpe_update">
                             <input type="hidden" name="form_key" value="openid_config_page"/>
@@ -516,17 +516,17 @@ function gluu_is_oxd_registered(){
                                                 <?php } ?>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <th >
-                                                <input type="submit" class="btn btn-primary btn-md" <?php if(!gluu_is_oxd_registered()) echo 'disabled'?> value="Save Authentication Settings" name="set_oxd_config" />
-                                            </th>
-                                            <td>
-                                            </td>
-                                        </tr>
                                         </tbody>
                                     </table>
+                                    
+                                    <div style="border-bottom:2px solid #000;"></div>
+                                    <br/><br/>
+                                    <div clas="row">
+                                        <div class="col-md-4 col-md-offset-4 text-center">
+                                            <input type="submit" style="height: 35px;background-color: #337ab7 !important; color:white;    background-image: none;" class="btn btn-primary" <?php if(!gluu_is_oxd_registered()) echo 'disabled'?> value="Save Authentication Settings" name="set_oxd_config" />
+                                        </div>
+                                    </div>
                                 </div>
-                                <h3 style="margin-left: 30px;padding-top: 20px; border-top: 2px solid black; width: 75%"></h3>
                             </fieldset>
                         </form>
                     </div>

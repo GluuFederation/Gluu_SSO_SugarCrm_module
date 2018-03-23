@@ -5,7 +5,7 @@
 	 *
 	 * @package	  OpenID Connect SSO Module by Gluu
 	 * @category  Module for SugarCrm
-	 * @version   3.0.1
+	 * @version   3.1.1
 	 *
 	 * @author    Gluu Inc.          : <https://gluu.org>
 	 * @link      Oxd site           : <https://oxd.gluu.org>
@@ -47,14 +47,38 @@ function select_query($db, $action){
 	$result = $db->fetchRow($db->query("SELECT `gluu_value` FROM `gluu_table` WHERE `gluu_action` LIKE '$action'"))["gluu_value"];
 	return $result;
 }
+function get_protection_access_token(){
+    require_once("modules/Gluussos/oxd-rp/Get_client_access_token.php");
+    $db = DBManagerFactory::getInstance();
+    $gluu_config =   json_decode(select_query($db, "gluu_config"),true);
+    $gluu_provider = select_query($db, 'gluu_provider');
+    if($gluu_config["has_registration_endpoint"] != 1 || $gluu_config["has_registration_endpoint"] != true){
+        return null;
+    }
+    $get_client_access_token = new Get_client_access_token();
+    $get_client_access_token->setRequest_client_id($gluu_config['gluu_client_id']);
+    $get_client_access_token->setRequest_client_secret($gluu_config['gluu_client_secret']);
+    $get_client_access_token->setRequestOpHost($gluu_provider);
+
+    if($gluu_config['oxd_request_pattern'] == 2){
+        $status = $get_client_access_token->request(trim($gluu_config['gluu_oxd_host'],"/")."/get-client-token");
+    } else {
+        $status = $get_client_access_token->request();
+    }
+    if($status == false){
+        return false;
+    }
+
+    return $get_client_access_token->getResponse_access_token();
+}
 $db = DBManagerFactory::getInstance();
 $gluu_send_user_check  = select_query($db, 'gluu_send_user_check');
 $gluu_oxd_id  = select_query($db, 'gluu_oxd_id');
 
-if($gluu_send_user_check && $gluu_oxd_id) {
+if($gluu_send_user_check && $gluu_oxd_id && get_protection_access_token() != false) {
 	header("Location: ".login_url());exit;
 }
-else if(!$gluu_send_user_check && $gluu_oxd_id) {
+else if(!$gluu_send_user_check && $gluu_oxd_id && get_protection_access_token()!=false) {
 	?>
 	<script type="application/javascript">
 		jQuery( document ).ready(function() {
@@ -87,6 +111,7 @@ function login_url(){
 
 	$get_authorization_url = new Get_authorization_url();
 	$get_authorization_url->setRequestOxdId($oxd_id);
+        $get_authorization_url->setRequest_protection_access_token(get_protection_access_token());
 
 
 	$get_authorization_url->setRequestScope($gluu_config['config_scopes']);
@@ -95,7 +120,11 @@ function login_url(){
 	}else{
 		$get_authorization_url->setRequestAcrValues(null);
 	}
-	$get_authorization_url->request();
+        if($gluu_config["oxd_request_pattern"] == 2){
+            $get_authorization_url->request(trim($gluu_config["gluu_oxd_host"],"/")."/get-authorization-url");
+        } else {
+            $get_authorization_url->request();
+        }
 
 	return $get_authorization_url->getResponseAuthorizationUrl();
 }
