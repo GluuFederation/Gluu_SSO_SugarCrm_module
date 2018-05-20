@@ -96,7 +96,7 @@
 	    'name' => 'OpenID Connect SSO by Gluu',
 	    'published_date' => '2017-02-18 20:45:04',
 	    'type' => 'module',
-	    'version' => '3.0.1',
+	    'version' => '3.1.2',
 	    'remove_tables' => 'prompt',
 	
 	);

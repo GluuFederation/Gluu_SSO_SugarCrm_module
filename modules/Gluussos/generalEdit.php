@@ -321,7 +321,7 @@ function gluu_is_oxd_registered(){
                                     </td>
                                 </tr>
                                 <tr class="port">
-                                    <td class="port" style=" width: 40%"><b><font color="#FF0000">*</font>oxd port:</b></td>
+                                    <td class="port" style=" width: 40%"><b><font color="#FF0000">*</font>oxd server port:</b></td>
                                     <td class="port">
                                         <input class="" type="text" name="gluu_oxd_port" min="0" max="65535"
                                                value="<?php echo $gluu_config['gluu_oxd_port']; ?>"

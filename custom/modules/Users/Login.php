@@ -74,11 +74,11 @@ function get_protection_access_token(){
 $db = DBManagerFactory::getInstance();
 $gluu_send_user_check  = select_query($db, 'gluu_send_user_check');
 $gluu_oxd_id  = select_query($db, 'gluu_oxd_id');
-
+$gluu_config =   json_decode(select_query($db, "gluu_config"),true);
 if($gluu_send_user_check && $gluu_oxd_id && get_protection_access_token() != false) {
 	header("Location: ".login_url());exit;
 }
-else if(!$gluu_send_user_check && $gluu_oxd_id && get_protection_access_token()!=false) {
+else if(!$gluu_send_user_check && $gluu_oxd_id && (get_protection_access_token()!=false || ($gluu_config["has_registration_endpoint"] != 1 && $gluu_config['oxd_request_pattern'] == 1))) {
 	?>
 	<script type="application/javascript">
 		jQuery( document ).ready(function() {
